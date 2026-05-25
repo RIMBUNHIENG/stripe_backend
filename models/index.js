@@ -1,0 +1,151 @@
+const sequelize = require('../config/config');
+
+// Import all models
+const UserType = require('./UserType');
+const User = require('./User');
+const UserSession = require('./UserSession');
+const Admin = require('./Admin');
+const Student = require('./Student');
+const Mentor = require('./Mentor');
+const MentorPortfolio = require('./MentorPortfolio');
+const Skill = require('./Skill');
+const SubSkill = require('./SubSkill');
+const MentorSkill = require('./MentorSkill');
+const Province = require('./Province');
+const MentorPost = require('./MentorPost');
+const SubscriptionPlan = require('./SubscriptionPlan');
+const Subscription = require('./Subscription');
+const TransactionDetail = require('./TransactionDetail');
+const BakongPayment = require('./BakongPayment');
+const AccountHistoryLog = require('./AccountHistoryLog');
+const AccountHistory = require('./AccountHistory');
+const CommunityType = require('./CommunityType');
+const CommunityPost = require('./CommunityPost');
+const CommunityHistory = require('./CommunityHistory');
+
+// --- Associations ---
+
+// UserType <-> User (One-to-Many)
+UserType.hasMany(User, { foreignKey: 'user_type_id' });
+User.belongsTo(UserType, { foreignKey: 'user_type_id' });
+
+// User <-> Admin (One-to-One)
+User.hasOne(Admin, { foreignKey: 'user_id' });
+Admin.belongsTo(User, { foreignKey: 'user_id' });
+
+// User <-> Student (One-to-One)
+User.hasOne(Student, { foreignKey: 'user_id' });
+Student.belongsTo(User, { foreignKey: 'user_id' });
+
+// User <-> Mentor (One-to-One)
+User.hasOne(Mentor, { foreignKey: 'user_id' });
+Mentor.belongsTo(User, { foreignKey: 'user_id' });
+
+// User <-> UserSession (One-to-Many)
+User.hasMany(UserSession, { foreignKey: 'user_id' });
+UserSession.belongsTo(User, { foreignKey: 'user_id' });
+
+// User <-> AccountHistory (One-to-Many)
+User.hasMany(AccountHistory, { foreignKey: 'user_id' });
+AccountHistory.belongsTo(User, { foreignKey: 'user_id' });
+
+// User <-> AccountHistoryLog (One-to-Many)
+User.hasMany(AccountHistoryLog, { foreignKey: 'user_id' });
+AccountHistoryLog.belongsTo(User, { foreignKey: 'user_id' });
+
+// User <-> CommunityPost (One-to-Many)
+User.hasMany(CommunityPost, { foreignKey: 'user_id' });
+CommunityPost.belongsTo(User, { foreignKey: 'user_id' });
+
+// UserType <-> CommunityPost (One-to-Many)
+UserType.hasMany(CommunityPost, { foreignKey: 'user_type_id' });
+CommunityPost.belongsTo(UserType, { foreignKey: 'user_type_id' });
+
+// CommunityType <-> CommunityPost (One-to-Many)
+CommunityType.hasMany(CommunityPost, { foreignKey: 'community_type_id' });
+CommunityPost.belongsTo(CommunityType, { foreignKey: 'community_type_id' });
+
+// CommunityPost <-> CommunityHistory (One-to-Many)
+CommunityPost.hasMany(CommunityHistory, { foreignKey: 'post_com_id' });
+CommunityHistory.belongsTo(CommunityPost, { foreignKey: 'post_com_id' });
+
+// Mentor <-> MentorPortfolio (One-to-Many)
+Mentor.hasMany(MentorPortfolio, { foreignKey: 'mentor_id' });
+MentorPortfolio.belongsTo(Mentor, { foreignKey: 'mentor_id' });
+
+// Mentor <-> Subscription (One-to-One)
+Mentor.hasOne(Subscription, { foreignKey: 'user_id' });
+Subscription.belongsTo(Mentor, { foreignKey: 'user_id' });
+
+// UserType <-> Subscription (One-to-Many)
+UserType.hasMany(Subscription, { foreignKey: 'user_type_id' });
+Subscription.belongsTo(UserType, { foreignKey: 'user_type_id' });
+
+// Mentor <-> MentorSkill (One-to-Many)
+Mentor.hasMany(MentorSkill, { foreignKey: 'user_id' });
+MentorSkill.belongsTo(Mentor, { foreignKey: 'user_id' });
+
+// Mentor <-> MentorPost (One-to-Many)
+Mentor.hasMany(MentorPost, { foreignKey: 'user_id' });
+MentorPost.belongsTo(Mentor, { foreignKey: 'user_id' });
+
+// Skill <-> SubSkill (One-to-Many)
+Skill.hasMany(SubSkill, { foreignKey: 'skill_id' });
+SubSkill.belongsTo(Skill, { foreignKey: 'skill_id' });
+
+// SubSkill <-> MentorSkill (One-to-Many)
+SubSkill.hasMany(MentorSkill, { foreignKey: 'sub_skill_id' });
+MentorSkill.belongsTo(SubSkill, { foreignKey: 'sub_skill_id' });
+
+// SubSkill <-> MentorPost (One-to-Many)
+SubSkill.hasMany(MentorPost, { foreignKey: 'sub_skill_id' });
+MentorPost.belongsTo(SubSkill, { foreignKey: 'sub_skill_id' });
+
+// Province <-> MentorPost (One-to-Many)
+Province.hasMany(MentorPost, { foreignKey: 'province_id' });
+MentorPost.belongsTo(Province, { foreignKey: 'province_id' });
+
+// Admin <-> SubscriptionPlan (One-to-Many)
+Admin.hasMany(SubscriptionPlan, { foreignKey: 'admin_id' });
+SubscriptionPlan.belongsTo(Admin, { foreignKey: 'admin_id' });
+
+// SubscriptionPlan <-> Subscription (One-to-Many)
+SubscriptionPlan.hasMany(Subscription, { foreignKey: 'subscription_Plan_id' });
+Subscription.belongsTo(SubscriptionPlan, { foreignKey: 'subscription_Plan_id' });
+
+// User <-> TransactionDetail (One-to-Many)
+User.hasMany(TransactionDetail, { foreignKey: 'user_id' });
+TransactionDetail.belongsTo(User, { foreignKey: 'user_id' });
+
+// Subscription <-> TransactionDetail (One-to-Many)
+Subscription.hasMany(TransactionDetail, { foreignKey: 'subscription_id' });
+TransactionDetail.belongsTo(Subscription, { foreignKey: 'subscription_id' });
+
+// User <-> BakongPayment (One-to-Many)
+User.hasMany(BakongPayment, { foreignKey: 'user_id' });
+BakongPayment.belongsTo(User, { foreignKey: 'user_id' });
+
+module.exports = {
+  sequelize,
+  UserType,
+  User,
+  UserSession,
+  Admin,
+  Student,
+  Mentor,
+  MentorPortfolio,
+  Skill,
+  SubSkill,
+  MentorSkill,
+  Province,
+  MentorPost,
+  SubscriptionPlan,
+  Subscription,
+  TransactionDetail,
+  BakongPayment,
+  AccountHistoryLog,
+  AccountHistory,
+  CommunityType,
+  CommunityPost,
+  CommunityHistory
+};
