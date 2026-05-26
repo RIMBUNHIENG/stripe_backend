@@ -6,9 +6,13 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const { sequelize } = require('./models');
+const setupSwagger = require('./config/swagger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Setup Swagger UI Documentation
+setupSwagger(app);
 
 // Standard Security & Utility Middlewares
 app.use(helmet());
