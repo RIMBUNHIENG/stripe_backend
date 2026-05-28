@@ -1,12 +1,13 @@
 import User from "../../models/User.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import { generateToken, cookieOptions, generateOTP } from "../../utils/auth/auth.js";
+import UserType from "../../models/UserType.js";
 
 // register
 export const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, user_type } = req.body;
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !user_type) {
     return res.status(400).json({
       message: "Please enter all required fields",
     });
@@ -23,6 +24,7 @@ export const register = async (req, res) => {
     username: name,
     email,
     password: hashedPassword,
+    user_type_id: user_type,
   });
 
   const token = generateToken(newUser.id);
