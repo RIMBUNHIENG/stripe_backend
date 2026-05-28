@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
 const BakongPayment = sequelize.define('BakongPayment', {
   bakong_payments_id: {
@@ -37,4 +37,4 @@ const BakongPayment = sequelize.define('BakongPayment', {
   timestamps: false
 });
 
-module.exports = BakongPayment;
+export default BakongPayment;

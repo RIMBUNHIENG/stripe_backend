@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
 const AccountHistoryLog = sequelize.define('AccountHistoryLog', {
   id: {
@@ -28,4 +28,4 @@ const AccountHistoryLog = sequelize.define('AccountHistoryLog', {
   timestamps: false
 });
 
-module.exports = AccountHistoryLog;
+export default AccountHistoryLog;

@@ -1,17 +1,13 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
-const SubSkill = sequelize.define('SubSkill', {
-  sub_skill_id: {
+const CommunityType = sequelize.define('CommunityType', {
+  community_type_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  skill_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  skill_name: {
+  community_type_name: {
     type: DataTypes.STRING(100),
     allowNull: false
   },
@@ -23,8 +19,8 @@ const SubSkill = sequelize.define('SubSkill', {
     type: DataTypes.DATE
   }
 }, {
-  tableName: 'sub_skill',
+  tableName: 'community_type',
   timestamps: false
 });
 
-module.exports = SubSkill;
+export default CommunityType;

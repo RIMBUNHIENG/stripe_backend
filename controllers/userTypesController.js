@@ -1,9 +1,9 @@
-const { UserType } = require('../models');
+import { UserType } from '../models/index.js';
 
 /**
  * Get all user types from the database.
  */
-exports.getUserTypes = async (req, res) => {
+export const getUserTypes = async (req, res) => {
   try {
     const userTypes = await UserType.findAll();
     res.json(userTypes);
@@ -15,7 +15,7 @@ exports.getUserTypes = async (req, res) => {
 /**
  * Create a new user type.
  */
-exports.createUserType = async (req, res) => {
+export const createUserType = async (req, res) => {
   try {
     const { user_type_name } = req.body;
     if (!user_type_name) {

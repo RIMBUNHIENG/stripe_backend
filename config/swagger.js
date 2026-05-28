@@ -1,6 +1,6 @@
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-require('dotenv').config();
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import 'dotenv/config';
 
 const port = process.env.PORT || 3000;
 
@@ -56,4 +56,4 @@ function setupSwagger(app) {
   console.log(`📑 Swagger Documentation available at http://localhost:${port}/api-docs`);
 }
 
-module.exports = setupSwagger;
+export default setupSwagger;

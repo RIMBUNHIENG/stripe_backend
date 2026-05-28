@@ -1,12 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import 'dotenv/config';
 
-const { sequelize } = require('./models');
-const setupSwagger = require('./config/swagger');
+import { sequelize } from './models/index.js';
+import setupSwagger from './config/swagger.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -52,7 +52,7 @@ app.get('/health', async (req, res) => {
   }
 });
 // API Routes
-const userTypesRouter = require('./routes/v1/userTypes');
+import userTypesRouter from './routes/v1/userTypes.js';
 app.use('/api/v1/user-types', userTypesRouter);
 
 // Connect to Database and start server

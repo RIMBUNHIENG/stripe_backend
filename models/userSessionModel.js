@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
 const UserSession = sequelize.define('UserSession', {
   session_id: {
@@ -41,4 +41,4 @@ const UserSession = sequelize.define('UserSession', {
   timestamps: false
 });
 
-module.exports = UserSession;
+export default UserSession;

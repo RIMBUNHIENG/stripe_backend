@@ -1,18 +1,18 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
-const MentorSkill = sequelize.define('MentorSkill', {
-  ms_id: {
+const SubSkill = sequelize.define('SubSkill', {
+  sub_skill_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  user_id: {
+  skill_id: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  sub_skill_id: {
-    type: DataTypes.INTEGER,
+  skill_name: {
+    type: DataTypes.STRING(100),
     allowNull: false
   },
   create_date: {
@@ -23,8 +23,8 @@ const MentorSkill = sequelize.define('MentorSkill', {
     type: DataTypes.DATE
   }
 }, {
-  tableName: 'mentor_skill',
+  tableName: 'sub_skill',
   timestamps: false
 });
 
-module.exports = MentorSkill;
+export default SubSkill;

@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
-const Student = sequelize.define('Student', {
+const Mentor = sequelize.define('Mentor', {
   user_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -13,20 +13,23 @@ const Student = sequelize.define('Student', {
   lastname: {
     type: DataTypes.STRING(100)
   },
+  gender: {
+    type: DataTypes.STRING(20)
+  },
   phone_number: {
     type: DataTypes.STRING(100)
   },
-  study_major: {
-    type: DataTypes.STRING(100)
+  address: {
+    type: DataTypes.STRING(255)
   },
-  university: {
-    type: DataTypes.STRING(150)
+  experience_years: {
+    type: DataTypes.INTEGER
   },
   description: {
-    type: DataTypes.STRING(200)
+    type: DataTypes.TEXT
   },
-  address: {
-    type: DataTypes.STRING(250)
+  profile_picture: {
+    type: DataTypes.TEXT
   },
   create_date: {
     type: DataTypes.DATE,
@@ -36,8 +39,8 @@ const Student = sequelize.define('Student', {
     type: DataTypes.DATE
   }
 }, {
-  tableName: 'student',
+  tableName: 'mentor',
   timestamps: false
 });
 
-module.exports = Student;
+export default Mentor;

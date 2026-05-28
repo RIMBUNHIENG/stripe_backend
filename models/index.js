@@ -1,27 +1,27 @@
-const sequelize = require('../config/config');
+import sequelize from '../config/config.js';
 
 // Import all models
-const UserType = require('./UserType');
-const User = require('./User');
-const UserSession = require('./UserSession');
-const Admin = require('./Admin');
-const Student = require('./Student');
-const Mentor = require('./Mentor');
-const MentorPortfolio = require('./MentorPortfolio');
-const Skill = require('./Skill');
-const SubSkill = require('./SubSkill');
-const MentorSkill = require('./MentorSkill');
-const Province = require('./Province');
-const MentorPost = require('./MentorPost');
-const SubscriptionPlan = require('./SubscriptionPlan');
-const Subscription = require('./Subscription');
-const TransactionDetail = require('./TransactionDetail');
-const BakongPayment = require('./BakongPayment');
-const AccountHistoryLog = require('./AccountHistoryLog');
-const AccountHistory = require('./AccountHistory');
-const CommunityType = require('./CommunityType');
-const CommunityPost = require('./CommunityPost');
-const CommunityHistory = require('./CommunityHistory');
+import UserType from './userTypeModel.js';
+import User from './userModel.js';
+import UserSession from './userSessionModel.js';
+import Admin from './adminModel.js';
+import Student from './studentModel.js';
+import Mentor from './mentorModel.js';
+import MentorPortfolio from './mentorPortfolioModel.js';
+import Skill from './skillModel.js';
+import SubSkill from './subSkillModel.js';
+import MentorSkill from './mentorSkillModel.js';
+import Province from './provinceModel.js';
+import MentorPost from './mentorPostModel.js';
+import SubscriptionPlan from './subscriptionPlanModel.js';
+import Subscription from './subscriptionModel.js';
+import TransactionDetail from './transactionDetailModel.js';
+import BakongPayment from './bakongPaymentModel.js';
+import AccountHistoryLog from './accountHistoryLogModel.js';
+import AccountHistory from './accountHistoryModel.js';
+import CommunityType from './communityTypeModel.js';
+import CommunityPost from './communityPostModel.js';
+import CommunityHistory from './communityHistoryModel.js';
 
 // --- Associations ---
 
@@ -125,7 +125,7 @@ TransactionDetail.belongsTo(Subscription, { foreignKey: 'subscription_id' });
 User.hasMany(BakongPayment, { foreignKey: 'user_id' });
 BakongPayment.belongsTo(User, { foreignKey: 'user_id' });
 
-module.exports = {
+export {
   sequelize,
   UserType,
   User,

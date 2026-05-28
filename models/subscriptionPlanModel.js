@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
 const SubscriptionPlan = sequelize.define('SubscriptionPlan', {
   subscription_Plan_id: {
@@ -30,4 +30,4 @@ const SubscriptionPlan = sequelize.define('SubscriptionPlan', {
   timestamps: false
 });
 
-module.exports = SubscriptionPlan;
+export default SubscriptionPlan;

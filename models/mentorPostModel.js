@@ -1,41 +1,44 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
-const CommunityPost = sequelize.define('CommunityPost', {
-  post_com_id: {
+const MentorPost = sequelize.define('MentorPost', {
+  post_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
-  },
-  user_type_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false
   },
   user_id: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  community_type_id: {
+  province_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  sub_skill_id: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
   title: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(200),
     allowNull: false
   },
   description: {
     type: DataTypes.TEXT
   },
-  media: {
-    type: DataTypes.TEXT
+  status: {
+    type: DataTypes.STRING(20)
   },
   create_date: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
+  },
+  update_date: {
+    type: DataTypes.DATE
   }
 }, {
-  tableName: 'community_post',
+  tableName: 'mentor_post',
   timestamps: false
 });
 
-module.exports = CommunityPost;
+export default MentorPost;

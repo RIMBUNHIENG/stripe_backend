@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const userTypesController = require('../../controllers/userTypesController');
+import * as userTypesController from '../../controllers/userTypesController.js';
 
 /**
  * @openapi
@@ -61,4 +61,4 @@ router.get('/', userTypesController.getUserTypes);
  */
 router.post('/', userTypesController.createUserType);
 
-module.exports = router;
+export default router;

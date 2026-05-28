@@ -1,14 +1,14 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
-const UserType = sequelize.define('UserType', {
-  user_type_id: {
+const Skill = sequelize.define('Skill', {
+  skill_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  user_type_name: {
-    type: DataTypes.STRING(50),
+  skill_name: {
+    type: DataTypes.STRING(100),
     allowNull: false
   },
   create_date: {
@@ -19,8 +19,8 @@ const UserType = sequelize.define('UserType', {
     type: DataTypes.DATE
   }
 }, {
-  tableName: 'users_type',
+  tableName: 'skill',
   timestamps: false
 });
 
-module.exports = UserType;
+export default Skill;

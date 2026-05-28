@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
 const CommunityHistory = sequelize.define('CommunityHistory', {
   history_id: {
@@ -39,4 +39,4 @@ const CommunityHistory = sequelize.define('CommunityHistory', {
   timestamps: false
 });
 
-module.exports = CommunityHistory;
+export default CommunityHistory;

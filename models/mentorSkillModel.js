@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
-const Admin = sequelize.define('Admin', {
-  admin_id: {
+const MentorSkill = sequelize.define('MentorSkill', {
+  ms_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
@@ -11,8 +11,9 @@ const Admin = sequelize.define('Admin', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  profile_picture: {
-    type: DataTypes.TEXT
+  sub_skill_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   },
   create_date: {
     type: DataTypes.DATE,
@@ -22,8 +23,8 @@ const Admin = sequelize.define('Admin', {
     type: DataTypes.DATE
   }
 }, {
-  tableName: 'admin',
+  tableName: 'mentor_skill',
   timestamps: false
 });
 
-module.exports = Admin;
+export default MentorSkill;

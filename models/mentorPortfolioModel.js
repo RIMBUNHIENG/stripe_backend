@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/config.js';
 
 const MentorPortfolio = sequelize.define('MentorPortfolio', {
   mentor_id: {
@@ -20,4 +20,4 @@ const MentorPortfolio = sequelize.define('MentorPortfolio', {
   timestamps: false
 });
 
-module.exports = MentorPortfolio;
+export default MentorPortfolio;
