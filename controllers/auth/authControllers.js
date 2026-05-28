@@ -35,3 +35,50 @@ export const register = async (req, res) => {
     user: newUser,
   });
 };
+
+// login
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!password || !email) {
+      return res.status(400).json({
+        message: "Please provide all fields",
+      });
+    }
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid user",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: "Invalid",
+      });
+    }
+
+      const token = generateToken(user.id);
+
+      res.cookie("token", token, cookieOptions);
+
+      res.json({
+        user: {
+          id: user.id,
+          name: user.username,
+          email: user.email,
+        },
+      });
+    
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
