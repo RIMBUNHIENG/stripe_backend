@@ -22,7 +22,7 @@ export const verifyOTP = async (req, res) => {
   const validOTP = await OTP.findOne({
     where: {
       code: otp,
-      UserId: user.id,
+      user_id: user.user_id,
     },
   });
 
@@ -44,7 +44,7 @@ export const verifyOTP = async (req, res) => {
   await validOTP.destroy();
 
   // create token
-  const token = generateToken(user.id);
+  const token = generateToken(user.user_id);
 
   //   store cookie
   res.cookie("token", token, cookieOptions);
@@ -52,7 +52,7 @@ export const verifyOTP = async (req, res) => {
   res.json({
     message: "login success",
     user: {
-      id: user.id,
+      id: user.user_id,
       name: user.username,
       email: user.email,
     },

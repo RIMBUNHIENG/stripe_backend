@@ -21,7 +21,8 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   status: {
-    type: DataTypes.STRING(20)
+    type: DataTypes.STRING(20),
+    defaultValue: "active"
   },
   create_date: {
     type: DataTypes.DATE,

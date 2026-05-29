@@ -2,7 +2,8 @@ import User from "../../models/userModel.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import { generateToken, cookieOptions, generateOTP } from "../../utils/auth/auth.js";
 import UserType from "../../models/userTypeModel.js";
-
+import OTP from "../../models/otpModel.js";
+import { sendEmail, transporter } from "../../utils/auth/sendEmail.js";
 // register
 export const register = async (req, res) => {
   const { name, email, password, user_type } = req.body;
@@ -27,12 +28,12 @@ export const register = async (req, res) => {
     user_type_id: user_type,
   });
 
-  const token = generateToken(newUser.id);
+  const token = generateToken(newUser.user_id);
 
   res.cookie("token", token, cookieOptions);
 
   return res.status(201).json({
-    user: newUser,
+    message: "Register succesfully"
   });
 };
 
@@ -44,7 +45,7 @@ export const login = async (req, res) => {
 
     if (!password || !email) {
       return res.status(400).json({
-        message: "Please provide all fields",
+        message: "Please provide all fields.",
       });
     }
 
@@ -52,7 +53,7 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid user",
+        message: "Invalid user.",
       });
     }
 
@@ -60,7 +61,7 @@ export const login = async (req, res) => {
 
     if (!isMatch) {
       return res.status(400).json({
-        message: "Invalid",
+        message: "Invalid Password.",
       });
     }
 
@@ -80,7 +81,7 @@ export const login = async (req, res) => {
 
     await OTP.create({
       code: otp,
-      UserId: user.id,
+      user_id: user.user_id,
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
 
