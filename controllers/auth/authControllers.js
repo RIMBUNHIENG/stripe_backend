@@ -1,7 +1,7 @@
-import User from "../../models/User.js";
+import User from "../../models/userModel.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import { generateToken, cookieOptions, generateOTP } from "../../utils/auth/auth.js";
-import UserType from "../../models/UserType.js";
+import UserType from "../../models/userTypeModel.js";
 
 // register
 export const register = async (req, res) => {

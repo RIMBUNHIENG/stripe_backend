@@ -22,7 +22,7 @@ import AccountHistory from './accountHistoryModel.js';
 import CommunityType from './communityTypeModel.js';
 import CommunityPost from './communityPostModel.js';
 import CommunityHistory from './communityHistoryModel.js';
-
+import OTP from './otpModel.js';
 // --- Associations ---
 
 // User <-> OTP (One-to-Many)

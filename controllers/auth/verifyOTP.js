@@ -1,6 +1,6 @@
 import { generateToken, cookieOptions } from "../../utils/auth/auth.js";
-import OTP from "../../models/OTP.js";
-import User from "../../models/User.js";
+import OTP from "../../models/otpModel.js";
+import User from "../../models/userModel.js";
 
 export const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
