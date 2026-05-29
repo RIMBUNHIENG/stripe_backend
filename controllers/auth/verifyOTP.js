@@ -2,6 +2,7 @@ import { generateToken, cookieOptions } from "../../utils/auth/auth.js";
 import OTP from "../../models/otpModel.js";
 import User from "../../models/userModel.js";
 
+
 export const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
 
@@ -53,8 +54,9 @@ export const verifyOTP = async (req, res) => {
     message: "login success",
     user: {
       id: user.user_id,
-      name: user.username,
       email: user.email,
+      user_type: user.user_type_id
+      
     },
   });
 };
