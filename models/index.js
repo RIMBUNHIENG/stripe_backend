@@ -25,6 +25,10 @@ import CommunityHistory from './communityHistoryModel.js';
 
 // --- Associations ---
 
+// User <-> OTP (One-to-Many)
+User.hasMany(OTP, { foreignKey: 'user_id' });
+OTP.belongsTo(User, { foreignKey: 'user_id' });
+
 // UserType <-> User (One-to-Many)
 UserType.hasMany(User, { foreignKey: 'user_type_id' });
 User.belongsTo(UserType, { foreignKey: 'user_type_id' });
@@ -147,5 +151,6 @@ export {
   AccountHistory,
   CommunityType,
   CommunityPost,
-  CommunityHistory
+  CommunityHistory,
+  OTP
 };

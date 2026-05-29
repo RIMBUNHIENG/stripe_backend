@@ -1,24 +1,18 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+import sequelize from "../config/config.js";
 
-const User = sequelize.define("User", {
-    id:{
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
-    username: DataTypes.STRING,
-    email: {
-        type: DataTypes.STRING,
-        unique: true,
-    },
-    password: DataTypes.STRING,
-    status:{
-        type: DataTypes.STRING,
-        defaultValue: "active"
-    }
+const OTP = sequelize.define("OTP", {
+  code: {
+    type: DataTypes.STRING,
+  },
+  expiresAt: {
+    type: DataTypes.DATE,
+  },
+  UserId: {
+    type: DataTypes.INTEGER,
+  },
 }, {
-    tableName: 'Users'
+  tableName: 'OTPs'
 });
 
-export default User;
+export default OTP;

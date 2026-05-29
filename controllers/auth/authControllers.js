@@ -64,18 +64,36 @@ export const login = async (req, res) => {
       });
     }
 
-      const token = generateToken(user.id);
+    //   const token = generateToken(user.id);
 
-      res.cookie("token", token, cookieOptions);
+    //   res.cookie("token", token, cookieOptions);
 
-      res.json({
-        user: {
-          id: user.id,
-          name: user.username,
-          email: user.email,
-        },
-      });
-    
+    //   res.json({
+    //     user: {
+    //       id: user.id,
+    //       name: user.username,
+    //       email: user.email,
+    //     },
+    //   });
+
+    const otp = generateOTP();
+
+    await OTP.create({
+      code: otp,
+      UserId: user.id,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "Your OTP Code",
+      text: `Your OTP is ${otp}`,
+    });
+
+    res.json({
+      message: "OTP sent success",
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -89,5 +107,5 @@ export const logout = async (req, res) => {
 
     res.clearCookie('token', cookieOptions);
     res.json({message: 'Logged out successfully'})
-    
+
 }
