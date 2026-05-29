@@ -27,7 +27,7 @@ import * as userTypesController from '../../controllers/userTypesController.js';
  *                 error:
  *                   type: string
  */
-router.get('/', userTypesController.getUserTypes);
+router.get('/', getUserTypes);
 
 /**
  * @openapi
@@ -59,6 +59,6 @@ router.get('/', userTypesController.getUserTypes);
  *       500:
  *         description: Internal server error
  */
-router.post('/', userTypesController.createUserType);
+router.post('/', createUserType);
 
 export default router;

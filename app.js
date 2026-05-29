@@ -7,6 +7,8 @@ import 'dotenv/config';
 
 import { sequelize } from './models/index.js';
 import setupSwagger from './config/swagger.js';
+import authRoutes from './routes/v1/auth/auth.js';
+import userTypesRouter from './routes/v1/userTypes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -52,8 +54,10 @@ app.get('/health', async (req, res) => {
   }
 });
 // API Routes
-import userTypesRouter from './routes/v1/userTypes.js';
 app.use('/api/v1/user-types', userTypesRouter);
+
+// Auth
+app.use('/api/auth', authRoutes);
 
 // Connect to Database and start server
 async function startServer() {
