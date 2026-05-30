@@ -19,8 +19,8 @@ setupSwagger(app);
 // Standard Security & Utility Middlewares
 app.use(helmet());
 app.use(cors({
-  origin: '*', // Adjust to specific frontend domains if necessary
-  credentials: true
+  origin: 'http://localhost:5173', // Adjust to specific frontend domains if necessary
+  credentials: true,
 }));
 app.use(morgan('dev'));
 app.use(express.json());
