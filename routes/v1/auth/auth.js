@@ -267,7 +267,7 @@ router.get('/profile', protect, profile)
 router.delete(
   "/delete-user",
   protect,
-  authorize("admin"),
+  authorize("admin", "teacher", "student"),
   deleteUser
 );
 
