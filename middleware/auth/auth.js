@@ -23,7 +23,12 @@ export const protect = async (req, res, next ) => {
                 }
             )
         }
-        req.user = user;
+        req.user = {
+            user_id: user.user_id,
+            email: user.email,
+            status: user.status,
+            role: user.UserType?.user_type_name?.toLowerCase(),
+        };
         next();
 
     } catch (error) {

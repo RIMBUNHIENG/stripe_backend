@@ -15,47 +15,53 @@ import {
 
 // register
 export const register = async (req, res) => {
-  const { email, password, user_type } = req.body;
+  try {
+    const { email, password, user_type } = req.body;
 
-  if (!validateEmail(email)) {
-    return res.status(400).json({
-      message: "Invalid email format",
+    if (!validateEmail(email)) {
+      return res.status(400).json({
+        message: "Invalid email format",
+      });
+    }
+
+    if (!validatePassword(password)) {
+      return res.status(400).json({
+        message:
+          "Password must contain uppercase, lowercase, number, special character and be at least 8 characters",
+      });
+    }
+
+    if (!email || !password || !user_type) {
+      return res.status(400).json({
+        message: "Please enter all required fields",
+      });
+    }
+    const userExist = await User.findOne({ where: { email } });
+
+    if (userExist) {
+      return res.status(400).json({ message: "User already exist" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      email,
+      password: hashedPassword,
+      user_type_id: user_type,
+    });
+
+    const token = generateToken(newUser.user_id);
+
+    res.cookie("token", token, cookieOptions);
+
+    return res.status(201).json({
+      message: "Register succesfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
     });
   }
-
-  if (!validatePassword(password)) {
-    return res.status(400).json({
-      message:
-        "Password must contain uppercase, lowercase, number, special character and be at least 8 characters",
-    });
-  }
-
-  if (!email || !password || !user_type) {
-    return res.status(400).json({
-      message: "Please enter all required fields",
-    });
-  }
-  const userExist = await User.findOne({ where: { email } });
-
-  if (userExist) {
-    return res.status(400).json({ message: "User already exist" });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newUser = await User.create({
-    email,
-    password: hashedPassword,
-    user_type_id: user_type,
-  });
-
-  const token = generateToken(newUser.user_id);
-
-  res.cookie("token", token, cookieOptions);
-
-  return res.status(201).json({
-    message: "Register succesfully",
-  });
 };
 
 // login
@@ -141,10 +147,10 @@ export const logout = async (req, res) => {
 export const profile = async (req, res) => {
   try {
     res.json({
-      id: req.user.user_id || req.user.id,
+      id: req.user.user_id,
       email: req.user.email,
       status: req.user.status,
-      role: req.user.UserType.user_type_name,
+      role: req.user.role,
     });
   } catch (err) {
     res.status(500).json({

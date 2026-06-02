@@ -6,6 +6,8 @@ import { protect } from '../../../middleware/auth/auth.js';
 import { forgotPassword } from '../../../controllers/auth/Forgot Password/forgotPassword.js';
 import { setNewPassword } from '../../../controllers/auth/Forgot Password/setNewPassword.js';
 import { verifyForgotOTP } from '../../../controllers/auth/Forgot Password/verifyForgotOtp.js';
+import { authorize } from '../../../middleware/auth/rbac - authorize.js';
+import { deleteUser } from '../../../controllers/auth/deleteUser.js';
 
 const router = express.Router();
 
@@ -262,5 +264,11 @@ router.post('/set-new-password', setNewPassword)
  */
 router.get('/profile', protect, profile)
 
+router.delete(
+  "/delete-user",
+  protect,
+  authorize("admin"),
+  deleteUser
+);
 
 export default router;
