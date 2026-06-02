@@ -2,8 +2,14 @@ import User from "../../models/userModel.js";
 
 export const deleteUser = async (req, res) => {
   try {
-    const { user_id } = req.body;
+    const { user_id, password } = req.body;
 
+    if (!validatePassword(password)) {
+      return res.status(400).json({
+        message:
+          "Password must contain uppercase, lowercase, number, special character and be at least 8 characters",
+      });
+    }
     if (!user_id) {
       return res.status(400).json({
         message: "User ID is required",
