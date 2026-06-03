@@ -1,7 +1,9 @@
 import { generateToken, cookieOptions } from "../../utils/auth/auth.js";
 import OTP from "../../models/otpModel.js";
 import User from "../../models/userModel.js";
-
+import bcrypt from "bcryptjs/dist/bcrypt.js";
+import UserSession from "../../models/userSessionModel.js";
+import { generateAccessToken, generateRefreshToken } from "../../utils/auth/access - refresh - token.js";
 
 export const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
@@ -44,11 +46,32 @@ export const verifyOTP = async (req, res) => {
 
   await validOTP.destroy();
 
-  // create token
-  const token = generateToken(user.user_id);
+  // generate access token 
+
+  const accessToken = generateAccessToken(user.user_id);
+
+  // generate refresh token
+
+  const refreshToken = generateRefreshToken(user.user_id);
+
+  // hash refresh token
+
+  const refreshTokenHash = await bcrypt.hash(refreshToken, 10)
+
+  // create session
+  await UserSession.create({
+    user_id: user.user_id,
+    refresh_token_hash: refreshTokenHash,
+    device_info: req.headers["user-agent"],
+    ip_address: req.ip,
+    expires_at: new Date(
+      Date.now() + 7 * 24 * 60 * 60 * 1000
+    ),
+    is_revoked: false,
+  })
 
   //   store cookie
-  res.cookie("token", token, cookieOptions);
+  res.cookie("refreshToken", refreshToken, cookieOptions);
 
   res.json({
     message: "login success",
