@@ -8,7 +8,8 @@ import { setNewPassword } from '../../../controllers/auth/Forgot Password/setNew
 import { verifyForgotOTP } from '../../../controllers/auth/Forgot Password/verifyForgotOtp.js';
 import { authorize } from '../../../middleware/auth/rbac - authorize.js';
 import { deleteUser } from '../../../controllers/auth/deleteUser.js';
-import { loginLimit } from '../../../middleware/auth/loginLimit.js';
+import { loginLimit } from '../../../middleware/auth/authLimit.js';
+import { registerLimit } from '../../../middleware/auth/authLimit.js';
 
 const router = express.Router();
 
@@ -40,7 +41,7 @@ const router = express.Router();
  *       500:
  *         description: Server error
  */
-router.post('/register', register)
+router.post('/register', registerLimit ,register)
 
 // login
 
