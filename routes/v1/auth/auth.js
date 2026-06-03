@@ -8,6 +8,7 @@ import { setNewPassword } from '../../../controllers/auth/Forgot Password/setNew
 import { verifyForgotOTP } from '../../../controllers/auth/Forgot Password/verifyForgotOtp.js';
 import { authorize } from '../../../middleware/auth/rbac - authorize.js';
 import { deleteUser } from '../../../controllers/auth/deleteUser.js';
+import { loginLimit } from '../../../middleware/auth/loginLimit.js';
 
 const router = express.Router();
 
@@ -69,7 +70,7 @@ router.post('/register', register)
  *       500:
  *         description: Server error
  */
-router.post('/login', login)
+router.post('/login', loginLimit ,login)
 
 // logout
 

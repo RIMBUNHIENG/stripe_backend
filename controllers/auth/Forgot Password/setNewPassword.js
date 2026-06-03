@@ -1,12 +1,13 @@
 import bcrypt from "bcryptjs";
 import User from "../../../models/userModel.js";
 import OTP from "../../../models/otpModel.js";
+import { validatePassword } from "../validators/authValidation.js";
 
 export const setNewPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
 
-    if (!validatePassword(password)) {
+    if (!validatePassword(newPassword)) {
       return res.status(400).json({
         message:
           "Password must contain uppercase, lowercase, number, special character and be at least 8 characters",

@@ -1,4 +1,5 @@
 import User from "../../models/userModel.js";
+import { validatePassword } from "./validators/authValidation.js";
 
 export const deleteUser = async (req, res) => {
   try {
