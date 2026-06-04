@@ -11,7 +11,8 @@ import { deleteUser } from '../../../controllers/auth/deleteUser.js';
 import { loginLimit } from '../../../middleware/auth/authLimit.js';
 import { registerLimit } from '../../../middleware/auth/authLimit.js';
 import { verifyRefreshToken } from '../../../middleware/auth/verifyRefreshToken.js';
-import { refreshToken } from '../../../controllers/auth/refreshToken.js';
+import { refreshToken } from '../../../controllers/auth/Refresh Token/refreshToken.js';
+import { logoutAll } from '../../../controllers/auth/Refresh Token/logoutAll.js';
 
 const router = express.Router();
 
@@ -268,6 +269,7 @@ router.post('/set-new-password', setNewPassword)
  */
 router.get('/profile', protect, profile)
 
+// delete user
 router.delete(
   "/delete-user",
   protect,
@@ -275,6 +277,10 @@ router.delete(
   deleteUser
 );
 
+// refresh token
 router.post('/refresh-token', verifyRefreshToken, refreshToken)
+
+// 
+router.post('/logout-all', verifyRefreshToken, logoutAll)
 
 export default router;

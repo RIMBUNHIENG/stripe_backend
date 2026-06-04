@@ -27,7 +27,7 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    const code = Math.floor(100000 + Math.random() * 900000);
+    const code = generateOTP();
 
     await OTP.create({
       code: code,
@@ -35,7 +35,14 @@ export const forgotPassword = async (req, res) => {
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
 
-    await sendEmail(email, code);
+    try {
+      await sendEmail(email, code);
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+      return res.status(500).json({
+        message: "Failed to send OTP. Please try again.",
+      });
+    }
 
     res.json({
       message: "OTP sent successfully",

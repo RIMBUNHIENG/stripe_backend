@@ -1,5 +1,5 @@
 import User from "../../models/userModel.js";
-import bcrypt from "bcryptjs/dist/bcrypt.js";
+import bcrypt from "bcryptjs";
 import {
   generateToken,
   cookieOptions,
@@ -7,6 +7,7 @@ import {
 } from "../../utils/auth/auth.js";
 import UserType from "../../models/userTypeModel.js";
 import OTP from "../../models/otpModel.js";
+import UserSession from "../../models/userSessionModel.js";
 import { sendEmail, transporter } from "../../utils/auth/sendEmail.js";
 import {
   validateEmail,
@@ -40,6 +41,15 @@ export const register = async (req, res) => {
         message: "Please enter all required fields",
       });
     }
+
+    // Validate user_type exists
+    const userTypeExists = await UserType.findByPk(user_type);
+    if (!userTypeExists) {
+      return res.status(400).json({
+        message: "Invalid user type",
+      });
+    }
+
     const userExist = await User.findOne({ where: { email } });
 
     if (userExist) {
@@ -56,11 +66,11 @@ export const register = async (req, res) => {
 
     // generate access token
 
-    const accessToken = generateAccessToken(user.user_id);
+    const accessToken = generateAccessToken(newUser.user_id);
 
     // generate refresh token
 
-    const refreshToken = generateRefreshToken(user.user_id);
+    const refreshToken = generateRefreshToken(newUser.user_id);
 
     // hash refresh token
 
@@ -68,7 +78,7 @@ export const register = async (req, res) => {
 
     // create session
     await UserSession.create({
-      user_id: user.user_id,
+      user_id: newUser.user_id,
       refresh_token_hash: refreshTokenHash,
       device_info: req.headers["user-agent"],
       ip_address: req.ip,
@@ -81,6 +91,7 @@ export const register = async (req, res) => {
 
     return res.status(201).json({
       message: "Register succesfully",
+      accessToken,
     });
   } catch (error) {
     res.status(500).json({
@@ -143,12 +154,19 @@ export const login = async (req, res) => {
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: "Your OTP Code",
-      text: `Your OTP is ${otp}`,
-    });
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "Your OTP Code",
+        text: `Your OTP is ${otp}`,
+      });
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+      return res.status(500).json({
+        message: "Failed to send OTP. Please try again.",
+      });
+    }
 
     res.json({
       message: "OTP sent success",
