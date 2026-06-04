@@ -10,6 +10,7 @@ import { authorize } from '../../../middleware/auth/rbac - authorize.js';
 import { deleteUser } from '../../../controllers/auth/deleteUser.js';
 import { loginLimit } from '../../../middleware/auth/authLimit.js';
 import { registerLimit } from '../../../middleware/auth/authLimit.js';
+import { verifyRefreshToken } from '../../../middleware/auth/verifyRefreshToken.js';
 
 const router = express.Router();
 
@@ -93,7 +94,7 @@ router.post('/login', loginLimit ,login)
  *       500:
  *         description: Server error
  */
-router.post('/logout', logout)
+router.post('/logout', verifyRefreshToken,logout)
 
 // verify otp (login)
 

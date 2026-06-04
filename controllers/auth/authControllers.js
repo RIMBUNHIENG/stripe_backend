@@ -12,6 +12,10 @@ import {
   validateEmail,
   validatePassword,
 } from "./validators/authValidation.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utils/auth/access - refresh - token.js";
 
 // register
 export const register = async (req, res) => {
@@ -50,9 +54,30 @@ export const register = async (req, res) => {
       user_type_id: user_type,
     });
 
-    const token = generateToken(newUser.user_id);
+    // generate access token
 
-    res.cookie("token", token, cookieOptions);
+    const accessToken = generateAccessToken(user.user_id);
+
+    // generate refresh token
+
+    const refreshToken = generateRefreshToken(user.user_id);
+
+    // hash refresh token
+
+    const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+
+    // create session
+    await UserSession.create({
+      user_id: user.user_id,
+      refresh_token_hash: refreshTokenHash,
+      device_info: req.headers["user-agent"],
+      ip_address: req.ip,
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      is_revoked: false,
+    });
+
+    //   store cookie
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     return res.status(201).json({
       message: "Register succesfully",
@@ -138,8 +163,19 @@ export const login = async (req, res) => {
 // logout
 
 export const logout = async (req, res) => {
-  res.clearCookie("token", cookieOptions);
-  res.json({ message: "Logged out successfully" });
+  try {
+    req.UserSession.is_revoked = true;
+
+    await req.UserSession.save();
+
+    res.clearCookie("refreshToken", cookieOptions);
+
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
 //who User profile
