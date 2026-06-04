@@ -1,5 +1,6 @@
 import User from "../../models/userModel.js";
 import { validatePassword } from "./validators/authValidation.js";
+import bcrypt from "bcryptjs";
 
 export const deleteUser = async (req, res) => {
   try {
@@ -22,6 +23,15 @@ export const deleteUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         message: "User not found",
+      });
+    }
+
+    // Verify that the provided password matches the stored password hash
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json({
+        message: "Password is incorrect",
       });
     }
 
