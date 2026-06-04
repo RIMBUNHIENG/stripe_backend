@@ -6,7 +6,7 @@ import { protect } from '../../../middleware/auth/auth.js';
 import { forgotPassword } from '../../../controllers/auth/Forgot Password/forgotPassword.js';
 import { setNewPassword } from '../../../controllers/auth/Forgot Password/setNewPassword.js';
 import { verifyForgotOTP } from '../../../controllers/auth/Forgot Password/verifyForgotOtp.js';
-import { authorize } from '../../../middleware/auth/rbac - authorize.js';
+import { authorize } from '../../../middleware/auth/rbacAuthorize.js';
 import { deleteUser } from '../../../controllers/auth/deleteUser.js';
 import { loginLimit } from '../../../middleware/auth/authLimit.js';
 import { registerLimit } from '../../../middleware/auth/authLimit.js';
