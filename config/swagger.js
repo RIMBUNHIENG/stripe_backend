@@ -45,8 +45,6 @@ const options = {
             },
           },
         },
-      },
-      schemas: {
         RegisterRequest: {
           type: "object",
           required: ["email", "password", "user_type"],

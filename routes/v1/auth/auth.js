@@ -269,7 +269,26 @@ router.post('/set-new-password', setNewPassword)
  */
 router.get('/profile', protect, profile)
 
-// delete user
+/**
+ * @swagger
+ * /api/v1/auth/delete-user:
+ *   delete:
+ *     summary: Delete user account
+ *     description: Delete the authenticated user's account (requires admin, teacher, or student role)
+ *     tags:
+ *       - Authentication
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - insufficient permissions
+ *       500:
+ *         description: Server error
+ */
 router.delete(
   "/delete-user",
   protect,
@@ -277,10 +296,46 @@ router.delete(
   deleteUser
 );
 
-// refresh token
+/**
+ * @swagger
+ * /api/v1/auth/refresh-token:
+ *   post:
+ *     summary: Refresh access token
+ *     description: Get a new access token using a valid refresh token cookie
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: Token refreshed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken: { type: 'string' }
+ *       401:
+ *         description: Unauthorized - invalid or missing refresh token
+ *       500:
+ *         description: Server error
+ */
 router.post('/refresh-token', verifyRefreshToken, refreshToken)
 
-// 
+/**
+ * @swagger
+ * /api/v1/auth/logout-all:
+ *   post:
+ *     summary: Logout from all devices
+ *     description: Invalidate all refresh tokens for the user across all devices
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: Logged out from all devices successfully
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
 router.post('/logout-all', verifyRefreshToken, logoutAll)
 
 export default router;
