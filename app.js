@@ -9,6 +9,8 @@ import { sequelize } from './models/index.js';
 import setupSwagger from './config/swagger.js';
 import authRoutes from './routes/v1/auth/auth.js';
 import userTypesRouter from './routes/v1/userTypes.js';
+import stripeRoutes from './routes/v1/stripe.js';
+import { stripeWebhook } from './controllers/stripe/stripeWebhook.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,9 +21,17 @@ setupSwagger(app);
 // Standard Security & Utility Middlewares
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:5173', // Adjust to specific frontend domains if necessary
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true,
 }));
+
+// Stripe webhook must receive the raw body for signature verification
+app.post(
+  '/api/v1/stripe/webhook',
+  express.raw({ type: 'application/json' }),
+  stripeWebhook,
+);
+
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -59,6 +69,9 @@ app.use('/api/v1/user-types', userTypesRouter);
 // Auth
 app.use('/api/v1/auth', authRoutes);
 
+// Stripe payments
+app.use('/api/v1/stripe', stripeRoutes);
+
 // Connect to Database and start server
 async function startServer() {
   try {
@@ -66,9 +79,10 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('✅ Database connected successfully.');
 
-    console.log('Synchronizing database models (creating tables)...');
-    await sequelize.sync({ alter: true });
-    console.log('✅ Database tables synchronized successfully.');
+    console.log('Synchronizing database models...');
+    // Only creates missing tables, doesn't modify existing ones
+    await sequelize.sync();
+    console.log('✅ Database synchronized successfully.');
 
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);

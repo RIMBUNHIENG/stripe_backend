@@ -17,6 +17,7 @@ import SubscriptionPlan from './subscriptionPlanModel.js';
 import Subscription from './subscriptionModel.js';
 import TransactionDetail from './transactionDetailModel.js';
 import BakongPayment from './bakongPaymentModel.js';
+import StripePayment from './stripePaymentModel.js';
 import AccountHistoryLog from './accountHistoryLogModel.js';
 import AccountHistory from './accountHistoryModel.js';
 import CommunityType from './communityTypeModel.js';
@@ -129,6 +130,14 @@ TransactionDetail.belongsTo(Subscription, { foreignKey: 'subscription_id' });
 User.hasMany(BakongPayment, { foreignKey: 'user_id' });
 BakongPayment.belongsTo(User, { foreignKey: 'user_id' });
 
+// User <-> StripePayment (One-to-Many)
+User.hasMany(StripePayment, { foreignKey: 'user_id' });
+StripePayment.belongsTo(User, { foreignKey: 'user_id' });
+
+// Subscription <-> StripePayment (One-to-Many)
+Subscription.hasMany(StripePayment, { foreignKey: 'subscription_id' });
+StripePayment.belongsTo(Subscription, { foreignKey: 'subscription_id' });
+
 export {
   sequelize,
   UserType,
@@ -147,6 +156,7 @@ export {
   Subscription,
   TransactionDetail,
   BakongPayment,
+  StripePayment,
   AccountHistoryLog,
   AccountHistory,
   CommunityType,

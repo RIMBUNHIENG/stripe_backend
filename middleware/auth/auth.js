@@ -4,7 +4,12 @@ import UserType from '../../models/userTypeModel.js';
 
 export const protect = async (req, res, next ) => {
     try {
-        const token = req.cookies.token;
+        let token = req.cookies.token;
+
+        if (!token && req.headers.authorization?.startsWith('Bearer ')) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+
         if(!token){
             return res.status(401).json({
                 message: 'Not authorized, no token'
@@ -27,6 +32,7 @@ export const protect = async (req, res, next ) => {
             user_id: user.user_id,
             email: user.email,
             status: user.status,
+            user_type_id: user.user_type_id,
             role: user.UserType?.user_type_name?.toLowerCase(),
         };
         next();

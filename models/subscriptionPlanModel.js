@@ -9,7 +9,7 @@ const SubscriptionPlan = sequelize.define('SubscriptionPlan', {
   },
   admin_id: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true  // Allow null for testing without admin
   },
   name: {
     type: DataTypes.STRING(200),
@@ -24,7 +24,15 @@ const SubscriptionPlan = sequelize.define('SubscriptionPlan', {
   },
   description: {
     type: DataTypes.STRING(255)
-  }
+  },
+  stripe_price_id: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+  },
+  stripe_product_id: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+  },
 }, {
   tableName: 'subscription_Plan',
   timestamps: false

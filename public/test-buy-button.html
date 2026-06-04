@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Stripe Buy Button</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            background: #f7f7f7;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 RokKru Subscription</h1>
+        
+        <div class="info">
+            <p><strong>Testing Stripe Buy Button</strong></p>
+            <p>Use test card: <code>4242 4242 4242 4242</code></p>
+            <p>Expiry: <code>12/34</code> | CVC: <code>123</code></p>
+        </div>
+
+        <!-- Stripe Buy Button -->
+        <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+        <stripe-buy-button
+          buy-button-id="buy_btn_1TgbFaFf1NjKrMMAcIZMErg8"
+          publishable-key="pk_test_51TXFvFFf1NjKrMMA9DxXAAvkd66FrPjnlL8Mg812SNlaBKjVCufsKFw60w27GLV1ouFim9XM12LfaQeq536tSofi00Gj3gu58H">
+        </stripe-buy-button>
+
+        <hr style="margin-top: 40px;">
+        
+        <h3>📝 Test Instructions:</h3>
+        <ol style="text-align: left; display: inline-block;">
+            <li>Click the Buy Button above</li>
+            <li>Enter test card: 4242 4242 4242 4242</li>
+            <li>Use any future expiry date (e.g., 12/34)</li>
+            <li>Use any 3-digit CVC (e.g., 123)</li>
+            <li>Complete payment</li>
+            <li>Check Stripe Dashboard for the transaction</li>
+        </ol>
+    </div>
+</body>
+</html>
