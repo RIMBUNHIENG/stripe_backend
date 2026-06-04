@@ -11,6 +11,7 @@ import { deleteUser } from '../../../controllers/auth/deleteUser.js';
 import { loginLimit } from '../../../middleware/auth/authLimit.js';
 import { registerLimit } from '../../../middleware/auth/authLimit.js';
 import { verifyRefreshToken } from '../../../middleware/auth/verifyRefreshToken.js';
+import { refreshToken } from '../../../controllers/auth/refreshToken.js';
 
 const router = express.Router();
 
@@ -273,5 +274,7 @@ router.delete(
   authorize("admin", "teacher", "student"),
   deleteUser
 );
+
+router.post('/refresh-token', verifyRefreshToken, refreshToken)
 
 export default router;
