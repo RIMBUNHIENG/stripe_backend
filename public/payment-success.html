@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success - RokKru</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #f7f7f7;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .value {
+            color: #333;
+            font-family: monospace;
+        }
+
+        .loading {
+            color: #666;
+        }
+
+        .error {
+            color: #f44336;
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #5469d4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #4053b8;
+        }
+
+        .note {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="success-icon">✅</div>
+    <h1>Payment Successful!</h1>
+
+    <div class="card">
+        <div id="payment-info" class="loading">
+            <p>Loading payment details...</p>
+        </div>
+    </div>
+
+    <button onclick="window.location.href = '/test-buy-button.html'">
+        Back to Subscriptions
+    </button>
+
+    <div class="note">
+        <strong>📝 What happens next:</strong>
+        <ul style="text-align: left; margin-top: 10px;">
+            <li>Webhook is processing your payment</li>
+            <li>Your subscription will be activated automatically</li>
+            <li>Check the database to see the complete record</li>
+        </ul>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/v1';
+
+        async function loadPaymentInfo() {
+            try {
+                // Get session_id from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const sessionId = urlParams.get('session_id');
+
+                if (!sessionId) {
+                    throw new Error('No session ID found');
+                }
+
+                // Fetch payment details (no auth needed)
+                const response = await fetch(`${API_BASE}/stripe/session/${sessionId}`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to load payment details');
+                }
+
+                const data = await response.json();
+
+                // Display payment info
+                document.getElementById('payment-info').innerHTML = `
+                    <div class="info-row">
+                        <span class="label">Payment ID:</span>
+                        <span class="value">${data.paymentId || 'Pending'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Session ID:</span>
+                        <span class="value">${data.sessionId}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Amount:</span>
+                        <span class="value">$${(data.amountTotal / 100).toFixed(2)} ${data.currency.toUpperCase()}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Payment Status:</span>
+                        <span class="value">${data.status}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Subscription Status:</span>
+                        <span class="value">${data.subscriptionStatus}</span>
+                    </div>
+                    ${data.subscriptionId ? `
+                    <div class="info-row">
+                        <span class="label">Subscription ID:</span>
+                        <span class="value">${data.subscriptionId}</span>
+                    </div>
+                    ` : ''}
+                `;
+
+                console.log('✅ Payment details loaded:', data);
+
+            } catch (error) {
+                console.error('Error loading payment info:', error);
+                document.getElementById('payment-info').innerHTML = `
+                    <div class="error">
+                        <strong>⚠️ Error loading payment details</strong><br>
+                        ${error.message}
+                    </div>
+                    <p style="margin-top: 20px;">Your payment was successful, but we couldn't load the details. Please check your email for confirmation.</p>
+                `;
+            }
+        }
+
+        // Load payment info when page loads
+        loadPaymentInfo();
+    </script>
+</body>
+
+</html>

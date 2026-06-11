@@ -20,25 +20,28 @@ async function seedPlans() {
         // Create sample plans
         const plans = await SubscriptionPlan.bulkCreate([
             {
-                admin_id: 1, // You may need to adjust this
-                name: 'Basic Plan',
-                price: 9.99,
-                duration_day: new Date('2025-12-31'),
+                name: 'Starter',
+                price: 4.99,
+                duration_day: 30,
                 description: 'Perfect for getting started',
             },
             {
-                admin_id: 1,
-                name: 'Premium Plan',
-                price: 29.99,
-                duration_day: new Date('2025-12-31'),
+                name: 'Professional',
+                price: 19.99,
+                duration_day: 30,
                 description: 'Most popular - full access',
             },
             {
-                admin_id: 1,
-                name: 'Enterprise Plan',
+                name: 'Business',
+                price: 49.99,
+                duration_day: 30,
+                description: 'For growing teams',
+            },
+            {
+                name: 'Enterprise',
                 price: 99.99,
-                duration_day: new Date('2025-12-31'),
-                description: 'For teams and organizations',
+                duration_day: 30,
+                description: 'For large organizations',
             }
         ]);
 

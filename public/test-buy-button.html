@@ -1,62 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Stripe Buy Button</title>
+    <title>Test Stripe Payment with API</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 50px auto;
             padding: 20px;
-            text-align: center;
         }
-        h1 {
-            color: #333;
-        }
-        .container {
+
+        .plan-card {
             background: #f7f7f7;
-            padding: 40px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
+        button {
+            background: #5469d4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4053b8;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .info {
             background: #e3f2fd;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
+
+        .test-card {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>🛒 RokKru Subscription</h1>
-        
-        <div class="info">
-            <p><strong>Testing Stripe Buy Button</strong></p>
-            <p>Use test card: <code>4242 4242 4242 4242</code></p>
-            <p>Expiry: <code>12/34</code> | CVC: <code>123</code></p>
-        </div>
+    <h1>🛒 RokKru Subscription - API Test</h1>
 
-        <!-- Stripe Buy Button -->
-        <script async src="https://js.stripe.com/v3/buy-button.js"></script>
-        <stripe-buy-button
-          buy-button-id="buy_btn_1TgbFaFf1NjKrMMAcIZMErg8"
-          publishable-key="pk_test_51TXFvFFf1NjKrMMA9DxXAAvkd66FrPjnlL8Mg812SNlaBKjVCufsKFw60w27GLV1ouFim9XM12LfaQeq536tSofi00Gj3gu58H">
-        </stripe-buy-button>
-
-        <hr style="margin-top: 40px;">
-        
-        <h3>📝 Test Instructions:</h3>
-        <ol style="text-align: left; display: inline-block;">
-            <li>Click the Buy Button above</li>
-            <li>Enter test card: 4242 4242 4242 4242</li>
-            <li>Use any future expiry date (e.g., 12/34)</li>
-            <li>Use any 3-digit CVC (e.g., 123)</li>
-            <li>Complete payment</li>
-            <li>Check Stripe Dashboard for the transaction</li>
-        </ol>
+    <div class="info">
+        <p><strong>ℹ️ This uses API checkout (saves to database)</strong></p>
+        <p>Payment will be tracked with user_id and payment_id</p>
     </div>
+
+    <div id="plans-container">
+        <p>Loading plans...</p>
+    </div>
+
+    <div class="test-card">
+        <h3>📝 Test Card Details:</h3>
+        <ul>
+            <li>Card: <code>4242 4242 4242 4242</code></li>
+            <li>Expiry: <code>12/34</code></li>
+            <li>CVC: <code>123</code></li>
+            <li>ZIP: <code>12345</code></li>
+        </ul>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/v1';
+
+        // Test user (you can change these)
+        const testUser = {
+            user_id: 1,
+            email: 'test@rokkru.com'
+        };
+
+        async function loadPlans() {
+            try {
+                const response = await fetch(`${API_BASE}/stripe/plans`);
+                const plans = await response.json();
+
+                const container = document.getElementById('plans-container');
+                container.innerHTML = plans.map(plan => `
+                    <div class="plan-card">
+                        <h2>${plan.name}</h2>
+                        <p style="font-size: 32px; font-weight: bold; color: #5469d4;">
+                            $${plan.price}
+                        </p>
+                        <p>${plan.description || 'Premium subscription'}</p>
+                        <button onclick="subscribe(${plan.subscription_Plan_id}, '${plan.name}', ${plan.price})">
+                            Subscribe Now
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('plans-container').innerHTML =
+                    `<p style="color: red;">Error loading plans: ${error.message}</p>
+                     <p>Make sure server is running: npm start</p>`;
+            }
+        }
+
+        async function subscribe(planId, planName, price) {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Creating checkout...';
+
+            try {
+                console.log('Creating checkout for:', planName, '$' + price);
+
+                const response = await fetch(`${API_BASE}/stripe/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        subscription_plan_id: planId,
+                        user_id: testUser.user_id,
+                        email: testUser.email,
+                        success_url: window.location.origin + '/payment-success.html?session_id={CHECKOUT_SESSION_ID}',
+                        cancel_url: window.location.href
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Payment failed');
+                }
+
+                const { sessionId, url, payment_id } = await response.json();
+
+                console.log('✅ Checkout created!');
+                console.log('Session ID:', sessionId);
+                console.log('Payment ID:', payment_id);
+                console.log('User ID:', testUser.user_id);
+                console.log('Status: pending (will be "completed" after webhook)');
+                console.log('Redirecting to Stripe...');
+
+                // Show payment_id alert before redirect
+                alert(`✅ Payment created!\n\nPayment ID: ${payment_id}\nSession ID: ${sessionId}\n\nYou will now be redirected to Stripe to complete payment.`);
+
+                // Redirect to Stripe Checkout
+                window.location.href = url;
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Subscribe Now';
+            }
+        }
+
+        // Load plans when page loads
+        loadPlans();
+    </script>
 </body>
+
 </html>

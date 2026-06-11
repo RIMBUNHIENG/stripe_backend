@@ -7,10 +7,6 @@ const SubscriptionPlan = sequelize.define('SubscriptionPlan', {
     primaryKey: true,
     autoIncrement: true
   },
-  admin_id: {
-    type: DataTypes.INTEGER,
-    allowNull: true  // Allow null for testing without admin
-  },
   name: {
     type: DataTypes.STRING(200),
     allowNull: false

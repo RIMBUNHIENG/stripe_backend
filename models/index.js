@@ -110,10 +110,6 @@ MentorPost.belongsTo(SubSkill, { foreignKey: 'sub_skill_id' });
 Province.hasMany(MentorPost, { foreignKey: 'province_id' });
 MentorPost.belongsTo(Province, { foreignKey: 'province_id' });
 
-// Admin <-> SubscriptionPlan (One-to-Many)
-Admin.hasMany(SubscriptionPlan, { foreignKey: 'admin_id' });
-SubscriptionPlan.belongsTo(Admin, { foreignKey: 'admin_id' });
-
 // SubscriptionPlan <-> Subscription (One-to-Many)
 SubscriptionPlan.hasMany(Subscription, { foreignKey: 'subscription_Plan_id' });
 Subscription.belongsTo(SubscriptionPlan, { foreignKey: 'subscription_Plan_id' });

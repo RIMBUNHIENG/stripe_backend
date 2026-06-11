@@ -81,7 +81,7 @@ async function startServer() {
 
     console.log('Synchronizing database models...');
     // Only creates missing tables, doesn't modify existing ones
-    await sequelize.sync();
+    await sequelize.sync({alter: true});
     console.log('✅ Database synchronized successfully.');
 
     app.listen(PORT, () => {

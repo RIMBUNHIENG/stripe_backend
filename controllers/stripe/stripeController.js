@@ -39,10 +39,19 @@ export const createCheckoutSession = async (req, res) => {
 
     const {
       subscription_plan_id: subscriptionPlanId,
+      user_id: userId,
+      email,
       success_url: successUrl,
       cancel_url: cancelUrl,
     } = req.body;
-    const userId = req.user.user_id;
+
+    // Validate required fields
+    if (!userId) {
+      return res.status(400).json({ message: 'user_id is required' });
+    }
+    if (!email) {
+      return res.status(400).json({ message: 'email is required' });
+    }
 
     const parsedPlanId = Number(subscriptionPlanId);
     if (!Number.isInteger(parsedPlanId) || parsedPlanId <= 0) {
@@ -89,7 +98,7 @@ export const createCheckoutSession = async (req, res) => {
       ],
       success_url: successUrl || `${frontendUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${frontendUrl}/payment/cancel`,
-      customer_email: req.user.email,
+      customer_email: email,
       metadata: {
         user_id: String(userId),
         subscription_plan_id: String(parsedPlanId),
@@ -97,7 +106,8 @@ export const createCheckoutSession = async (req, res) => {
       },
     });
 
-    await StripePayment.create({
+    // Create payment record in database - payment_id is auto-generated
+    const payment = await StripePayment.create({
       user_id: userId,
       stripe_checkout_session_id: session.id,
       amount,
@@ -105,11 +115,20 @@ export const createCheckoutSession = async (req, res) => {
       status: 'pending',
     });
 
+    console.log('✅ Payment record created:');
+    console.log('   payment_id:', payment.stripe_payment_id);
+    console.log('   user_id:', payment.user_id);
+    console.log('   session_id:', payment.stripe_checkout_session_id);
+    console.log('   amount:', payment.amount);
+    console.log('   status:', payment.status);
+
     return res.status(201).json({
       sessionId: session.id,
       url: session.url,
+      payment_id: payment.stripe_payment_id, // Return the auto-generated payment_id
     });
   } catch (error) {
+    console.error('❌ Create checkout error:', error);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -123,7 +142,6 @@ export const listSubscriptionPlans = async (req, res) => {
         'price',
         'duration_day',
         'description',
-        'stripe_price_id',
       ],
     });
     return res.json(plans);
@@ -137,19 +155,26 @@ export const getCheckoutSession = async (req, res) => {
     if (!requireStripe(res)) return;
 
     const { sessionId } = req.params;
-    const userId = req.user.user_id;
+    // Allow user_id from query params for no-auth access
+    const userId = req.query.user_id ? Number(req.query.user_id) : null;
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const payment = await StripePayment.findOne({
       where: { stripe_checkout_session_id: sessionId },
     });
 
-    if (!payment || payment.user_id !== userId) {
+    if (!payment) {
       return res.status(404).json({ message: 'Checkout session not found' });
+    }
+
+    // If user_id is provided, verify it matches
+    if (userId && payment.user_id !== userId) {
+      return res.status(403).json({ message: 'Unauthorized access to this session' });
     }
 
     return res.json({
       sessionId: session.id,
+      paymentId: payment.stripe_payment_id,
       status: session.payment_status,
       amountTotal: session.amount_total,
       currency: session.currency,
