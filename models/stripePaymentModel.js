@@ -22,6 +22,10 @@ const StripePayment = sequelize.define('StripePayment', {
   stripe_payment_intent_id: {
     type: DataTypes.STRING(255),
   },
+  stripe_receipt_url: {
+    type: DataTypes.STRING(500),
+    allowNull: true,
+  },
   amount: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,

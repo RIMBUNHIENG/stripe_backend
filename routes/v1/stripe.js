@@ -5,6 +5,7 @@ import {
   getCheckoutSession,
   getStripeConfig,
   listSubscriptionPlans,
+  getReceipt,
 } from '../../controllers/stripe/stripeController.js';
 
 const router = express.Router();
@@ -80,5 +81,38 @@ router.post('/create-checkout-session', protect, createCheckoutSession);
  *         description: Session status
  */
 router.get('/session/:sessionId', protect, getCheckoutSession);
+
+/**
+ * @swagger
+ * /api/v1/stripe/receipt/{payment_id}:
+ *   get:
+ *     summary: Get payment receipt/invoice URL
+ *     tags: [Stripe]
+ *     parameters:
+ *       - in: path
+ *         name: payment_id
+ *         required: true
+ *         schema: { type: integer }
+ *         description: Payment ID from database
+ *       - in: query
+ *         name: user_id
+ *         schema: { type: integer }
+ *         description: User ID for verification (optional)
+ *     responses:
+ *       200:
+ *         description: Receipt information with Stripe-hosted URL
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 payment_id: { type: integer }
+ *                 amount: { type: number }
+ *                 currency: { type: string }
+ *                 status: { type: string }
+ *                 receipt_url: { type: string, description: "Stripe-hosted receipt URL" }
+ *                 created_at: { type: string, format: date-time }
+ */
+router.get('/receipt/:payment_id', getReceipt);
 
 export default router;

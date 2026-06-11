@@ -86,6 +86,24 @@ async function handleCheckoutCompleted(session) {
   payment.currency = session.currency || payment.currency;
   payment.status = 'completed';
   payment.update_date = new Date();
+
+  // Get receipt URL from payment intent
+  try {
+    const paymentIntentId = getStripeId(session.payment_intent);
+    if (paymentIntentId) {
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      const chargeId = getStripeId(paymentIntent.latest_charge);
+
+      if (chargeId) {
+        const charge = await stripe.charges.retrieve(chargeId);
+        payment.stripe_receipt_url = charge.receipt_url; // Save receipt URL
+        console.log('✅ Receipt URL saved:', charge.receipt_url);
+      }
+    }
+  } catch (error) {
+    console.error('⚠️  Could not retrieve receipt URL:', error.message);
+  }
+
   await payment.save();
 
   await TransactionDetail.create({
